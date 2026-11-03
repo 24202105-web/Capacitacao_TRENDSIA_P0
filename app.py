@@ -4,16 +4,20 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai.errors import APIError
 
+# Carrega as variáveis do arquivo .env
 load_dotenv()
 
+# Verifica se a chave foi configurada
 api_key = os.getenv("GEMINI_API_KEY")
 if not api_key:
-    print("Erro: A variável da GEMINI não foi encontrada no arquivo .env.")
+    print("❌ Erro: A variável GEMINI_API_KEY não foi encontrada no arquivo .env.")
     sys.exit(1)
 
+# Inicializa o cliente oficial da API do Gemini
 client = genai.Client(api_key=api_key)
 
-SYSTEM_PROMPT = """
+# Instrução de sistema para o papel de tutor
+SYSTEM_INSTRUCTION = """
 Você é um tutor de inglês amigável e paciente ajudando um estudante brasileiro.
 Para cada mensagem que o usuário enviar em inglês:
 1. Se houver erros gramaticais ou de vocabulário, mostre a correção de forma gentil. Se estiver correto, elogie rapidamente.
@@ -26,6 +30,12 @@ def main():
     print("Escreva suas mensagens em inglês! Digite 'sair' para encerrar.\n")
     print("-" * 50)
 
+    # Inicializa a sessão de chat com as instruções do sistema e o modelo recomendado
+    chat = client.chats.create(
+        model="gemini-3.8-flash",
+        config={"system_instruction": SYSTEM_INSTRUCTION}
+    )
+
     while True:
         # 1. Recebe a entrada textual do usuário pelo terminal
         entrada = input("Você (em inglês): ")
@@ -37,14 +47,10 @@ def main():
         if not entrada.strip():
             continue
 
-        # 2. Solicitação derivada da entrada enviada ao LLM
-        prompt_derivado = f"{SYSTEM_PROMPT}\n\nMensagem do aluno: {entrada}"
-
         try:
-            response = client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=prompt_derivado
-            )
+            # 2. Envia a mensagem no chat (solicitação derivada com histórico e system instruction)
+            response = chat.send_message(entrada)
+            
             # 3. Apresenta a resposta ao usuário
             print(f"\n🤖 Tutor:\n{response.text}\n")
             print("-" * 50)
