@@ -28,5 +28,5 @@ def processar_mensagem(client: genai.Client, entrada_usuario: str) -> str | None
         )
         return response.text
     except APIError as e:
-        print(f"\n❌ Erro na chamada da API: {e.message}\n")
+        print(f"\n Erro na chamada da API: {e.message}\n")
         return None

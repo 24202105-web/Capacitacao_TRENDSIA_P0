@@ -8,10 +8,10 @@ def main():
     print("-" * 50)
 
     while True:
-        entrada = input("Você (em inglês): ")
+        entrada = input("Você: ")
         
         if entrada.lower().strip() in ['sair', 'exit', 'quit']:
-            print("Goodbye! 👋")
+            print("Goodbye! ")
             break
 
         if not entrada.strip():
@@ -19,7 +19,7 @@ def main():
 
         resposta = processar_mensagem(client, entrada)
         if resposta:
-            print(f"\n🤖 Tutor:\n{resposta}\n")
+            print(f"\n Tutor:\n{resposta}\n")
             print("-" * 50)
 
 if __name__ == "__main__":
