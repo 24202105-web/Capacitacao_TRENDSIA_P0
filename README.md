@@ -102,8 +102,7 @@ source venv/bin/activate
 
 **Edite o arquivo .env e insira sua chave válida:**
 
-    Snippet de código
-    GEMINI_API_KEY=sua_chave_real_aqui
+     GEMINI_API_KEY=sua_chave_real_aqui
 
 **Executar a aplicação:**
 
