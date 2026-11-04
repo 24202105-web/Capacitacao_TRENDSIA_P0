@@ -43,8 +43,8 @@ Projeto desenvolvido para cumprir os requisitos do projeto **P0 - Nível Básico
 
 1. **Clonar o repositório:**
    ```bash
- git clone https://github.com/24202105-web/Capacitacao_TRENDSIA.git
- cd Capacitacao_TRENDSIA
+        git clone https://github.com/24202105-web/Capacitacao_TRENDSIA.git
+        cd Capacitacao_TRENDSIA
 
  2. **Criar e ativar o ambiente virtual:**
  
