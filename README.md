@@ -2,33 +2,44 @@
 
 Aplicação CLI em Python que atua como tutor de inglês para estudantes brasileiros utilizando a API do Google Gemini, oferecendo correções gramaticais, elogios e continuidade de diálogo de forma bilíngue (inglês e português).
 
-Entrega consolidada do **P0 — Nível Avançado (`p0-avancado`)**.
+Entrega consolidada do **P0 — Níveis Básico (`p0-basico`), Intermediário (`p0-intermediario`) e Avançado (`p0-avancado`)**.
+
+- **Vídeo de Demonstração:** [INSERIR_LINK_DO_VIDEO_AQUI]
 
 ---
 
-## 🏗️ Estrutura do Projeto
+## 🎯 Problema, Público-Alvo e Justificativa do LLM
+
+- **Problema Escolhido:** Uma pessoa que estuda inglês por conta própria precisa transformar frases escritas em inglês em correções gramaticais comentadas e perguntas de continuação em português e inglês, porque atualmente enfrenta a falta de feedback imediato e acessível para praticar conversação escrita sem receio de errar.
+- **Público-Alvo:** Estudantes brasileiros de inglês em nível básico ou intermediário que buscam praticar escrita no dia a dia.
+- **Justificativa para Utilizar um LLM:** Regras fixas ou expressões regulares não conseguem interpretar variações livres de vocabulário, identificar erros contextuais de gramática e gerar respostas naturais em dois idiomas mantendo o diálogo ativo.
+
+---
+
+## 🏗️ Funcionamento e Estrutura do Projeto
+
+O fluxo da aplicação separa a interface de terminal, o carregamento de configurações externas, o núcleo de comunicação com o LLM e os testes automatizados:
 
 ```text
-Capacitacao_TRENDSIA/
+Capacitacao_TRENDSIA_P0/
 ├── tests/
-│   └── test_tutor.py      # Testes unitários offline (sem chamadas reais à API)
-├── .env.example           # Modelo de variáveis de ambiente e parâmetros do LLM
-├── .gitignore             # Ignora .env, ambientes virtuais e arquivos .log
-├── app.py                 # Interface de linha de comando (CLI)
-├── config.py              # Carregamento e validação das configurações externas
-├── tutor.py               # Núcleo de comunicação com o Gemini, logs e tratamento de erros
-├── requirements.txt       # Dependências do projeto
-└── README.md              # Documentação do projeto
+│   ├── __init__.py
+│   └── test_tutor.py          # Testes unitários offline (simulados, sem chamadas reais à API)
+├── .env.example               # Modelo público de variáveis de ambiente e parâmetros do LLM
+├── .gitignore                 # Ignora .env, ambientes virtuais e arquivos .log
+├── app.py                     # Interface de linha de comando (CLI) e loop de interação
+├── config.py                  # Carregamento e validação das configurações externas
+├── tutor.py                   # Núcleo de chamadas ao Gemini, logs seguros e tratamento de erros
+├── requirements.txt           # Dependências do projeto
+├── RELATORIO_EXECUCAO.md      # Relatório técnico de evolução, decisões, testes e reflexão
+└── README.md                  # Documentação principal do projeto
 ```
 
----
-
-## 🛠️ Stack e Versões
-
+### Stack e Versões
 - **Python:** `3.12` *(compatível com Python 3.10+)*
 - **Bibliotecas principais:**
   - `google-genai` (SDK oficial do Google Gemini)
-  - `python-dotenv` (gerenciamento de variáveis de ambiente)
+  - `python-dotenv` (carregamento de variáveis de ambiente a partir do `.env`)
   - `unittest` / `unittest.mock` (biblioteca padrão do Python para testes offline)
 - **Modelo padrão:** `gemini-3.5-flash-lite`
 
@@ -38,8 +49,8 @@ Capacitacao_TRENDSIA/
 
 ### 1. Clonar o repositório
 ```bash
-git clone https://github.com/24202105-web/Capacitacao_TRENDSIA.git
-cd Capacitacao_TRENDSIA
+git clone https://github.com/24202105-web/Capacitacao_TRENDSIA_P0.git
+cd Capacitacao_TRENDSIA_P0
 ```
 
 ### 2. Criar e ativar o ambiente virtual
@@ -60,12 +71,12 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-### 4. Configurar variáveis de ambiente
-Copie o arquivo de exemplo para `.env`:
+### 4. Configurar o acesso ao LLM (`.env`)
+Copie o arquivo de modelo para `.env`:
 * **Windows (PowerShell):** `Copy-Item .env.example .env`
 * **Linux / macOS:** `cp .env.example .env`
 
-Edite o `.env` e preencha sua chave obtida no [Google AI Studio](https://aistudio.google.com/). Os parâmetros do LLM podem ser ajustados nesse arquivo sem alterar o código-fonte:
+Edite o `.env` e adicione sua chave obtida no [Google AI Studio](https://aistudio.google.com/). Todos os parâmetros de geração e comportamento do tutor podem ser ajustados nesse arquivo sem alterar o código-fonte:
 
 | Variável | Obrigatória | Padrão | Descrição |
 | :--- | :---: | :--- | :--- |
@@ -79,55 +90,77 @@ Edite o `.env` e preencha sua chave obtida no [Google AI Studio](https://aistudi
 
 ---
 
-## ▶️ Execução e Testes
+## ▶️ Execução e Exemplos de Uso
 
-### Executar a aplicação
+### Executar a aplicação (uso real com a API)
 ```bash
 python app.py
 ```
-Digite suas frases em inglês no terminal. Para encerrar, digite `sair`, `exit` ou `quit`.
+Digite suas frases em inglês no terminal. Para encerrar a sessão com segurança, digite `sair`, `exit` ou `quit`.
 
-### Executar os testes unitários (offline)
-Os testes validam configuração, entradas inválidas, preparação de parâmetros, resposta simulada, erro simulado e sanitização de logs sem consumir cota da API:
-```bash
-python -m unittest discover -s tests -v
+### Exemplos de Entrada e Saída
+
+**1. Entrada com erro gramatical:**
+```text
+Você (em inglês): I goes to store yesterday
+
+🤖 Tutor:
+Almost there! A small correction: "I went to the store yesterday." ("goes" is present tense, and "went" is the past tense of "go").
+
+Quase lá! Uma pequena correção: "I went to the store yesterday." ("goes" está no presente, e "went" é o passado de "go").
+What did you buy at the store? (O que você comprou na loja?)
+```
+
+**2. Entrada gramaticalmente correta:**
+```text
+Você (em inglês): I like studying Python in the morning.
+
+🤖 Tutor:
+Great job! Your sentence is completely correct and very natural.
+
+Ótimo trabalho! Sua frase está totalmente correta e muito natural.
+How long have you been studying Python? (Há quanto tempo você estuda Python?)
+```
+
+**3. Entrada vazia (bloqueada localmente antes de chamar a API):**
+```text
+Você (em inglês):    
+⚠️ Entrada vazia! Por favor, digite uma frase em inglês ou 'sair' para encerrar.
 ```
 
 ---
 
-## 🛡️ Resiliência, Segurança e Logs
+## 🧪 Testes Reais e Simulados
 
-- **Validação preventiva:** bloqueia entradas vazias no terminal e valida parâmetros antes de chamar a API.
-- **Tratamento de falhas:** exibe mensagens claras em português para chave ausente/inválida (`400/401/403`), limite de cota ou indisponibilidade (`429/503`) e falhas de rede/timeout, sem expor *stacktraces*.
-- **Logs seguros (`execucao.log`):** registra apenas metadados técnicos (modelo, quantidade de caracteres, latência em ms e códigos de erro). Chaves de API, mensagens do usuário e respostas do LLM **nunca** são armazenadas.
+O projeto combina **testes simulados (offline)** para validar a lógica local sem custo de API e **testes reais** para verificar a integração ponta a ponta:
+
+### 1. Testes Simulados (Offline — sem chamada à API)
+Implementados em `tests/test_tutor.py` com `unittest.mock`. Validam carregamento de credenciais, bloqueio de placeholders, parâmetros inválidos, montagem de `GenerateContentConfig`, entrada vazia, resposta simulada, erro simulado de API (`503`), falha de rede (`TimeoutError`) e sanitização de logs:
+```bash
+python -m unittest discover -s tests -v
+```
+
+### 2. Testes Reais (Integração com Google Gemini)
+Executados diretamente via `python app.py` com chave válida no `.env` para validar:
+- Resposta bilíngue real do modelo `gemini-3.5-flash-lite`;
+- Tratamento amigável ao testar chave inválida (`400/403`);
+- Geração do arquivo `execucao.log` contendo apenas metadados técnicos (modelo, contagem de caracteres, latência em ms e códigos de status), sem expor chaves ou textos do usuário.
+
+---
+
+## ⚠️ Limites do Projeto e Limitações Conhecidas
+
+- **Sem memória entre turnos:** Cada mensagem é enviada de forma independente (`generate_content`), portanto o tutor não mantém histórico das frases anteriores da mesma sessão.
+- **Somente texto via terminal:** A aplicação não processa áudio, pronúncia ou compreensão auditiva.
+- **Dependência de conexão e cota externa:** O uso real exige acesso à internet e está sujeito aos limites de requisições e disponibilidade da API gratuita do Google Gemini.
 
 ---
 
 ## ✅ Validação em Ambiente Limpo
 
-Teste realizado em um novo ambiente virtual (`.venv_teste`) seguindo exclusivamente os passos deste README:
+Teste realizado em um novo ambiente virtual seguindo exclusivamente os passos deste `README.md`:
 
 - **Ambiente testado:** Windows / Python 3.12
 - **Instalação (`pip install -r requirements.txt`):** concluída sem conflitos.
-- **Testes offline (`unittest`):** todos os testes passaram sem acesso à API.
-- **Execução (`python app.py`):** inicialização, resposta bilíngue, geração de `execucao.log` sem dados sensíveis e encerramento controlado validados.
-- **Problemas encontrados e correções:** *Nenhum problema encontrado durante a instalação e execução limpa.* *(Caso ocorra algum ajuste durante seu teste, registre aqui o ocorrido e a solução aplicada.)*
-
----
-
-## 🤖 Desenvolvimento Assistido por IA
-
-Projeto desenvolvido com o apoio do **Gemini (Google AI)** para modularização da arquitetura, definição do esquema de logs seguros, estruturação dos testes com *mocks* e revisão da documentação.
-
-## 🎯 Problema e Justificativa do Uso de LLM
-
-- **Definição do Problema:** Uma pessoa que estuda inglês por conta própria precisa transformar frases escritas em inglês em correções gramaticais comentadas e perguntas de continuação em português e inglês, porque atualmente enfrenta a falta de feedback imediato e acessível para praticar conversação escrita sem receio de errar.
-- **Por que usar um LLM?** Regras fixas ou expressões regulares não conseguem interpretar variações livres de vocabulário, identificar erros contextuais de gramática e gerar respostas naturais em dois idiomas mantendo o diálogo ativo.
-
----
-
-## ⚠️ Limitações Conhecidas
-
-- **Sem memória entre turnos:** Cada mensagem é enviada de forma independente ao modelo (`generate_content`), portanto o tutor não lembra o histórico de frases anteriores da mesma sessão.
-- **Apenas entrada e saída em texto:** A aplicação opera exclusivamente via terminal, não avaliando pronúncia ou compreensão auditiva.
-- **Dependência de conexão e cota externa:** O funcionamento exige acesso à internet e está sujeito aos limites de requisições e disponibilidade da API gratuita do Google Gemini.
+- **Testes offline (`unittest`):** 8/8 testes aprovados sem acesso à API.
+- **Execução real (`python app.py`):** inicialização, resposta bilíngue, gravação segura em `execucao.log` e encerramento controlado validados.
