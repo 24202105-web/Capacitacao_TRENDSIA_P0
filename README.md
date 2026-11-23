@@ -1,144 +1,120 @@
 # 🇬🇧 English Tutor Assistant — P0 (TRENDS+IA)
 
-Uma aplicação em Python de interface via terminal que atua como um tutor de inglês para estudantes brasileiros. O sistema utiliza a API do Google Gemini para oferecer correções gramaticais gentis, elogios e manter o diálogo ativo com o usuário de forma bilíngue (inglês e português).
+Aplicação CLI em Python que atua como tutor de inglês para estudantes brasileiros utilizando a API do Google Gemini, oferecendo correções gramaticais, elogios e continuidade de diálogo de forma bilíngue (inglês e português).
 
-Projeto desenvolvido para cumprir os requisitos do **P0 (Níveis Básico e Intermediário)** do curso **TRENDS+IA**.
+Entrega consolidada do **P0 — Nível Avançado (`p0-avancado`)**.
+
+---
+
+## 🏗️ Estrutura do Projeto
+
+```text
+Capacitacao_TRENDSIA/
+├── tests/
+│   └── test_tutor.py      # Testes unitários offline (sem chamadas reais à API)
+├── .env.example           # Modelo de variáveis de ambiente e parâmetros do LLM
+├── .gitignore             # Ignora .env, ambientes virtuais e arquivos .log
+├── app.py                 # Interface de linha de comando (CLI)
+├── config.py              # Carregamento e validação das configurações externas
+├── tutor.py               # Núcleo de comunicação com o Gemini, logs e tratamento de erros
+├── requirements.txt       # Dependências do projeto
+└── README.md              # Documentação do projeto
+```
+
+---
+
+## 🛠️ Stack e Versões
+
+- **Python:** `3.12` *(compatível com Python 3.10+)*
+- **Bibliotecas principais:**
+  - `google-genai` (SDK oficial do Google Gemini)
+  - `python-dotenv` (gerenciamento de variáveis de ambiente)
+  - `unittest` / `unittest.mock` (biblioteca padrão do Python para testes offline)
+- **Modelo padrão:** `gemini-3.5-flash-lite`
+
+---
+
+## 🚀 Instalação e Configuração
+
+### 1. Clonar o repositório
+```bash
+git clone https://github.com/24202105-web/Capacitacao_TRENDSIA.git
+cd Capacitacao_TRENDSIA
+```
+
+### 2. Criar e ativar o ambiente virtual
+```bash
+python -m venv .venv
+```
+* **Windows (PowerShell):**
+  ```powershell
+  .\.venv\Scripts\Activate.ps1
+  ```
+* **Linux / macOS:**
+  ```bash
+  source .venv/bin/activate
+  ```
+
+### 3. Instalar as dependências
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Configurar variáveis de ambiente
+Copie o arquivo de exemplo para `.env`:
+* **Windows (PowerShell):** `Copy-Item .env.example .env`
+* **Linux / macOS:** `cp .env.example .env`
+
+Edite o `.env` e preencha sua chave obtida no [Google AI Studio](https://aistudio.google.com/). Os parâmetros do LLM podem ser ajustados nesse arquivo sem alterar o código-fonte:
+
+| Variável | Obrigatória | Padrão | Descrição |
+| :--- | :---: | :--- | :--- |
+| `GEMINI_API_KEY` | Sim | — | Chave de autenticação da API do Google Gemini |
+| `GEMINI_MODEL` | Não | `gemini-3.5-flash-lite` | Modelo utilizado na geração de respostas |
+| `GEMINI_TEMPERATURE` | Não | `0.7` | Criatividade das respostas (`0.0` a `2.0`) |
+| `GEMINI_MAX_OUTPUT_TOKENS` | Não | `500` | Limite máximo de tokens por resposta |
+| `TUTOR_SYSTEM_PROMPT` | Não | *Prompt bilíngue* | Instrução de comportamento do tutor |
+| `LOG_LEVEL` | Não | `INFO` | Nível de registro (`INFO`, `WARNING`, `ERROR`) |
+| `LOG_FILE` | Não | `execucao.log` | Arquivo local de logs operacionais |
+
+---
+
+## ▶️ Execução e Testes
+
+### Executar a aplicação
+```bash
+python app.py
+```
+Digite suas frases em inglês no terminal. Para encerrar, digite `sair`, `exit` ou `quit`.
+
+### Executar os testes unitários (offline)
+Os testes validam configuração, entradas inválidas, preparação de parâmetros, resposta simulada, erro simulado e sanitização de logs sem consumir cota da API:
+```bash
+python -m unittest discover -s tests -v
+```
+
+---
+
+## 🛡️ Resiliência, Segurança e Logs
+
+- **Validação preventiva:** bloqueia entradas vazias no terminal e valida parâmetros antes de chamar a API.
+- **Tratamento de falhas:** exibe mensagens claras em português para chave ausente/inválida (`400/401/403`), limite de cota ou indisponibilidade (`429/503`) e falhas de rede/timeout, sem expor *stacktraces*.
+- **Logs seguros (`execucao.log`):** registra apenas metadados técnicos (modelo, quantidade de caracteres, latência em ms e códigos de erro). Chaves de API, mensagens do usuário e respostas do LLM **nunca** são armazenadas.
+
+---
+
+## ✅ Validação em Ambiente Limpo
+
+Teste realizado em um novo ambiente virtual (`.venv_teste`) seguindo exclusivamente os passos deste README:
+
+- **Ambiente testado:** Windows / Python 3.12
+- **Instalação (`pip install -r requirements.txt`):** concluída sem conflitos.
+- **Testes offline (`unittest`):** todos os testes passaram sem acesso à API.
+- **Execução (`python app.py`):** inicialização, resposta bilíngue, geração de `execucao.log` sem dados sensíveis e encerramento controlado validados.
+- **Problemas encontrados e correções:** *Nenhum problema encontrado durante a instalação e execução limpa.* *(Caso ocorra algum ajuste durante seu teste, registre aqui o ocorrido e a solução aplicada.)*
 
 ---
 
 ## 🤖 Desenvolvimento Assistido por IA
 
-Este projeto foi construído de forma colaborativa com o auxílio do **Gemini (Google AI)** como parceiro de desenvolvimento (*thought partner* e suporte técnico). A IA foi utilizada para:
-- Estruturação e refatoração da arquitetura do código (modularização entre interface e regras de negócio);
-- Implementação e mapeamento de tratamento resiliente de exceções de API e ambiente;
-- Auxílio na criação de documentação e roteiros de comandos do Git/GitHub.
-
----
-
-## 🎯 Problema e Escopo
-
-- **Problema Resolvido:** A dificuldade de estudantes brasileiros em praticar a escrita em inglês de forma contínua, sem julgamentos e com feedbacks gramaticais imediatos.
-- **Público-Alvo:** Estudantes de inglês em nível básico/intermediário.
-- **Por que um LLM?** A correção gramatical adaptativa, o suporte bilíngue e a manutenção da fluidez em um diálogo dependem de processamento de linguagem natural (PLN) contextual, inviabilizando abordagens estáticas (*hardcoded*).
-
----
-
-## 🏗️ Arquitetura e Modularização (Nível Intermediário)
-
-O código foi refatorado para garantir a **separação clara de responsabilidades** em componentes distintos:
-
-- **`tutor.py`**: Módulo de regras de negócio. Responsável por carregar variáveis de ambiente, preparar prompts derivados, realizar chamadas à API da Google e tratar erros de autenticação, rede e indisponibilidade.
-- **`app.py`**: Módulo de interface de usuário (CLI). Responsável pela captura de entrada no terminal, validação de entradas vazias, chamadas às funções do tutor e exibição formatada da resposta.
-- **`.env.example`**: Modelo público de configuração para indicação da chave de API sem expor credenciais reais.
-- **`.gitignore`**: Proteção de credenciais locais (`.env`) e ambiente virtual (`venv/`).
-
----
-
-## 🛡️ Tratamento de Erros e Resiliência
-
-A aplicação foi projetada para encerrar ou reagir de maneira amigável em situações adversas:
-
-1. **Entradas Vazias:** Impede mensagens em branco ou compostas apenas por espaços no terminal.
-2. **Credencial Ausente:** Identifica a falta da variável `GEMINI_API_KEY` no arquivo `.env` e exibe orientações de configuração.
-3. **Credencial Inválida:** Captura tentativas com chaves no formato padrão (*placeholder*) ou recusadas pelo servidor do Google (erros `400/403/UNAUTHENTICATED`).
-4. **Indisponibilidade / Alta Demanda:** Trata picos de consumo da API (erros `503` / `RESOURCE_EXHAUSTED`), notificando o usuário sem expor *stacktraces* técnicos.
-5. **Falhas de Conexão e Timeout:** Trata interrupções de rede com mensagens claras em português.
-
----
-
-## 🛠️ Tecnologias e Stack
-
-- **Linguagem:** Python 3.10+
-- **LLM / SDK:** Google Gemini API (`google-genai` SDK)
-- **Modelo Utilizado:** `gemini-3.5-flash-lite` (equilíbrio entre velocidade, cota gratuita e baixa latência)
-- **Gerenciamento de Variáveis de Ambiente:** `python-dotenv`
-- **Versionamento:** Git e GitHub (Fluxo por *Branch*, *Pull Request* e *Tags*)
-
----
-
-## 🚀 Como Executar o Projeto Localmente
-
-### Pré-requisitos
-- Python 3.10 ou superior instalado.
-- Uma chave de API do Google Gemini ([obtenha aqui no Google AI Studio](https://aistudio.google.com/)). *Obs.: Recomenda-se utilizar uma conta pessoal do Google.*
-
-### Passo a Passo
-
-1. **Clonar o repositório:**
-   ```bash
-   git clone [https://github.com/24202105-web/Capacitacao_TRENDSIA.git](https://github.com/24202105-web/Capacitacao_TRENDSIA.git)
-   cd Capacitacao_TRENDSIA
-
-Criar e ativar o ambiente virtual:
-
-Bash
-python -m venv venv
-# No Windows:
-.\venv\Scripts\activate
-# No Linux/Mac:
-source venv/bin/activate
-
-python -m venv venv
-
-Criar e ativar o ambiente virtual:
-
-# No Windows (PowerShell):
-.\venv\Scripts\activate
-
-# No Linux/Mac:
-source venv/bin/activate
-
-**Instalar as dependências:**
-
-    ```bash
-    pip install -r requirements.txt
-
-**Configurar as variáveis de ambiente:**
-
-    Copie o arquivo .env.example para .env:
-
-    ```bash
-    cp .env.example .env
-
-**Edite o arquivo .env e insira sua chave válida:**
-
-    Snippet de código
-    GEMINI_API_KEY=sua_chave_real_aqui
-
-**Executar a aplicação:**
-
-    ```bash
-    python app.py
-
-
-
-Cenários de Teste Demonstrados
-Entrada Simples/Correta:
-
-Input: hi
-
-Resultado: Feedback amigável em inglês/português e pergunta para prosseguir.
-
-Entrada com Erro Gramatical:
-
-Input: I goes to store yesterday
-
-Resultado: Correção gentil apontando o tempo verbal correto (I went to the store yesterday) e continuidade da conversa.
-
-Teste de Entrada Vazia:
-
-Input: Teclar Enter sem conteúdo.
-
-Resultado: Alerta no terminal solicitando digitação válida.
-
-Teste de Credencial Ausente/Inválida:
-
-Procedimento: Executar sem .env ou com chave alterada para teste.
-
-Resultado: Exibição de mensagem informativa orientando o ajuste do .env.
-
-Encerramento Controlado:
-
-Input: Digitar sair, exit ou quit.
-
-Resultado: Mensagem de despedida e finalização do script.
+Projeto desenvolvido com o apoio do **Gemini (Google AI)** para modularização da arquitetura, definição do esquema de logs seguros, estruturação dos testes com *mocks* e revisão da documentação.
