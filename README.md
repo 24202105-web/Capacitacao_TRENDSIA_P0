@@ -118,3 +118,16 @@ Teste realizado em um novo ambiente virtual (`.venv_teste`) seguindo exclusivame
 ## 🤖 Desenvolvimento Assistido por IA
 
 Projeto desenvolvido com o apoio do **Gemini (Google AI)** para modularização da arquitetura, definição do esquema de logs seguros, estruturação dos testes com *mocks* e revisão da documentação.
+
+## 🎯 Problema e Justificativa do Uso de LLM
+
+- **Definição do Problema:** Uma pessoa que estuda inglês por conta própria precisa transformar frases escritas em inglês em correções gramaticais comentadas e perguntas de continuação em português e inglês, porque atualmente enfrenta a falta de feedback imediato e acessível para praticar conversação escrita sem receio de errar.
+- **Por que usar um LLM?** Regras fixas ou expressões regulares não conseguem interpretar variações livres de vocabulário, identificar erros contextuais de gramática e gerar respostas naturais em dois idiomas mantendo o diálogo ativo.
+
+---
+
+## ⚠️ Limitações Conhecidas
+
+- **Sem memória entre turnos:** Cada mensagem é enviada de forma independente ao modelo (`generate_content`), portanto o tutor não lembra o histórico de frases anteriores da mesma sessão.
+- **Apenas entrada e saída em texto:** A aplicação opera exclusivamente via terminal, não avaliando pronúncia ou compreensão auditiva.
+- **Dependência de conexão e cota externa:** O funcionamento exige acesso à internet e está sujeito aos limites de requisições e disponibilidade da API gratuita do Google Gemini.
