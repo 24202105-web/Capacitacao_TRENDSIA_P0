@@ -106,7 +106,7 @@ class TestTutorOffline(unittest.TestCase):
             self.assertNotIn("CHAVE_SECRETA_TESTE_999", conteudo_log)
             self.assertNotIn("My personal secret message 12345", conteudo_log)
             self.assertNotIn("Secret response content", conteudo_log)
-            self.assertIn("chars_entrada=31", conteudo_log)
+            self.assertIn("chars_entrada=32", conteudo_log)
         finally:
             logger_tutor.handlers.clear()
             logger_tutor.handlers.extend(handlers_originais)
