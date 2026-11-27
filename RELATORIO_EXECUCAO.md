@@ -2,7 +2,7 @@
 
 - **Projeto:** English Tutor Assistant (CLI bilíngue com Google Gemini)
 - **Repositório:** https://github.com/24202105-web/Capacitacao_TRENDSIA_P0
-- **Vídeo de Demonstração:** [INSERIR_LINK_DO_VIDEO_AQUI]
+- **Vídeo de Demonstração:**: https://youtu.be/zmy1PpTWWis
 
 ---
 

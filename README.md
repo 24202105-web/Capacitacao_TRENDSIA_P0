@@ -4,7 +4,7 @@ Aplicação CLI em Python que atua como tutor de inglês para estudantes brasile
 
 Entrega consolidada do **P0 — Níveis Básico (`p0-basico`), Intermediário (`p0-intermediario`) e Avançado (`p0-avancado`)**.
 
-- **Vídeo de Demonstração:** [INSERIR_LINK_DO_VIDEO_AQUI]
+- **Vídeo de Demonstração:**: https://youtu.be/zmy1PpTWWis
 
 ---
 
